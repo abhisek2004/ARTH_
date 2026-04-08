@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}ARTH — Media{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2>🎬 Media</h2>
+  <p>Images and videos from our community</p>
+</div>
+
+<div class="section">
+  {% if posts %}
+    <div class="grid">
+      {% for post in posts %}
+        {% set icons = {'image':'🖼️','video':'🎬'} %}
+        <div class="card">
+          {% if post.thumbnail_url %}
+            <img class="card-thumb" src="{{ post.thumbnail_url }}" alt="{{ post.title }}" loading="lazy">
+          {% elif post.file_url and post.category == 'image' %}
+            <img class="card-thumb" src="{{ post.file_url }}" alt="{{ post.title }}" loading="lazy">
+          {% elif post.file_url and post.category == 'video' %}
+            <video class="card-thumb" style="background:#111;" muted playsinline preload="metadata">
+              <source src="{{ post.file_url }}">
+            </video>
+            <div class="card-thumb-placeholder" style="margin-top:-100%;height:0;overflow:hidden;"></div>
+          {% else %}
+            <div class="card-thumb-placeholder">{{ icons.get(post.category, '🖼️') }}</div>
+          {% endif %}
+          <div class="card-body">
+            <span class="card-tag">{{ icons.get(post.category,'📁') }} {{ post.category }}</span>
+            <div class="card-title">{{ post.title }}</div>
+            <div class="card-desc">{{ post.description or 'No description.' }}</div>
+            <div class="card-footer">
+              <span class="card-date">{{ post.created_at.strftime('%b %d, %Y') if post.created_at else '' }}</span>
+              <a href="/post/{{ post._id }}" class="btn-view">View →</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">
+      <div class="empty-icon">🖼️</div>
+      <h3>No media yet</h3>
+      <p><a href="/upload">Upload an image or video</a> to get started.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
