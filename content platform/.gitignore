@@ -1,0 +1,23 @@
+.env
+.env.*
+.env.example
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Database
+*.db
+
+# Uploads (VERY IMPORTANT)
+static/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
