@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}ARTH — Publish & Discover{% endblock %}
+
+{% block content %}
+<div class="hero-strip">
+  <h1>Discover <em>Artificial Research & Technology Hub</em> ARTH</h1>
+  <p>Publish images, videos, articles, letters, and news. Share what matters to you.</p>
+</div>
+
+<div class="section">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% for cat, msg in messages %}
+  <div class="flash {{ cat }}">{{ msg }}</div>
+  {% endfor %}
+  {% endwith %}
+
+  {% if posts %}
+  <div class="section-title">Latest Content</div>
+  <div class="grid">
+    {% for post in posts %}
+    {% set icons = {'image':'🖼️','video':'🎬','story':'📖','letter':'✉️','article':'📄','news':'📰'} %}
+    <div class="card">
+      {% if post.thumbnail_url %}
+      <img class="card-thumb" src="{{ post.thumbnail_url }}" alt="{{ post.title }}" loading="lazy">
+      {% elif post.file_url and (post.category == 'image') %}
+      <img class="card-thumb" src="{{ post.file_url }}" alt="{{ post.title }}" loading="lazy">
+      {% else %}
+      <div class="card-thumb-placeholder">{{ icons.get(post.category, '📝') }}</div>
+      {% endif %}
+      <div class="card-body">
+        <span class="card-tag">{{ icons.get(post.category, '📝') }} {{ post.category }}</span>
+        <div class="card-title">{{ post.title }}</div>
+        <div class="card-desc">{{ post.description or post.content_text or 'No preview available.' }}</div>
+        <div class="card-footer">
+          <span class="card-date">{{ post.created_at.strftime('%b %d, %Y') if post.created_at else '' }}</span>
+          <a href="/post/{{ post._id }}" class="btn-view">View →</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <div class="empty-icon">✨</div>
+    <h3>Nothing here yet</h3>
+    <p>Be the first to <a href="/upload">publish something</a>.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
